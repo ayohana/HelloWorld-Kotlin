@@ -68,6 +68,7 @@ Do not confuse these literals:
 
 * `Alt + J` : Selects multiple words
 * `Alt + 1` : Shows/hides Project Structure navigation bar
+* `Alt + F12` : Shows/hides Terminal
 
 ## Known Bugs
 
@@ -85,6 +86,7 @@ No known bugs at this time.
 * [Basic Console App Tutorial in Kotlin](https://kotlinlang.org/docs/tutorials/jvm-get-started.html)
 * [Geting Started with IntelliJ: Setting up the environment](https://kotlinlang.org/docs/tutorials/jvm-get-started.html#setting-up-the-environment)
 * [All Materials to Learn Kotlin](https://kotlinlang.org/docs/reference/)
+* [Conditionals in Kotlin](https://kotlinlang.org/docs/tutorials/kotlin-for-py/conditionals.html)
 
 ## Contact and Support
 
