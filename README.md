@@ -62,6 +62,41 @@ Do not confuse these literals:
 * `'A'` is a character, `"A"` is a string;
 * `'1'` is a character, `1` is an integer number.
 
+### Higher-Order Functions and Lambdas
+
+* Kotlin functions are **first-class**, which means that they can be stored in variables and data structures, passed as arguments to and returned from other higher-order functions.
+* You can operate with functions in any way that is possible for other non-function values.
+* To facilitate this, Kotlin, as a **statically typed** programming language, uses a family of **function types** to represent functions and provides a set of specialized language constructs, such as lambda expressions.
+
+#### Function Types
+
+* Kotlin uses a family of function types like `(Int) -> String` for declarations that deal with functions: `val onClick: () -> Unit = ....`
+* These types have a special notation that corresponds to the signatures of the functions, i.e. their parameters and return values:
+    * **All function types have a parenthesized parameter types list and a return type:**
+        * `(A, B) -> C` denotes _a type_ that represents functions taking two arguments of types A and B and returning a value of type C.
+        * The parameter types list may be empty, as in `() -> A`.
+        * The `Unit` return type cannot be omitted.
+    * Function types can optionally have an additional **receiver** type, which is **specified before a dot in the notation**:
+        * The type `A.(B) -> C` represents functions that can be called on a receiver object of `A` with a parameter of `B` and return a value of `C`.
+        * Function literals with receiver are often used along with these types.
+    * **Suspending functions** belong to function types of a special kind, which have a `suspend` modifier in the notation, such as `suspend () -> Unit` or `suspend A.(B) -> C`.
+* The function type notation can _optionally_ include names for the function parameters: `(x: Int, y: Int) -> Point`. These names can be used for documenting the meaning of the parameters.
+
+#### Higher Order Functions
+
+* A **higher-order function** is a function that takes functions as parameters, or returns a function.
+* In functional programming, **fold** (also termed reduce, accumulate, aggregate, compress, or inject) refers to **a family of higher-order functions** that analyze a recursive data structure and through use of a given combining operation, recombine the results of recursively processing its constituent parts, building up a return value.
+
+#### `it` : implicit name of a single parameter
+
+* It's very common that a lambda expression has only **one parameter**.
+* It is **allowed** not to declare the only parameter and omit `->`.
+* The parameter will be implicitly declared under the name `it`:
+``````
+ints.filter { it > 0 }
+// this literal is of type '(it: Int) -> Boolean'
+``````
+
 ## Notes on IntelliJ
 
 ### Keyboard Shortcuts
