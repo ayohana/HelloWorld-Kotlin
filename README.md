@@ -25,6 +25,8 @@
     * A programming language for JVM (Java Virtual Machine), Android, browsers (JavaScript), and developers can compile Kotlin into native binaries, and can be run under Windows, Linux, iOS and MacOS.
 * **General-purpose**
     * As a general-purpose language, it can be used in many spheres such as the financial service industry, telecommunications, embedded systems, medicine, development tools (like IntelliJ IDEA), and so on.
+* **Type-inference**
+    * Type inference refers to the automatic detection of the data type of an expression in a programming language.
 * Kotlin is designed as a **pragmatic language**, which means, its main purpose is to solve real-world problems rather than completing research purposes.
 * It is also important that **Kotlin supports multiple programming paradigms**, such as imperative programming, object-oriented programming, generic programming, functional programming, and more. 
 * Kotlin is **a tool-friendly language**, which means all popular development tools such as IntelliJ IDEA, Eclipse, and Android Studio are compatible with it.
@@ -92,10 +94,94 @@ Do not confuse these literals:
 * It's very common that a lambda expression has only **one parameter**.
 * It is **allowed** not to declare the only parameter and omit `->`.
 * The parameter will be implicitly declared under the name `it`:
+    ``````
+    ints.filter { it > 0 }
+    // this literal is of type '(it: Int) -> Boolean'
+    ``````
+
+### Nullable and Non-Null Types
+
+In Kotlin, the type system distinguishes between references that can hold `null` (**nullable** references) and those that cannot (**non-null** references). For example, a regular variable of type `String` cannot hold `null`:
 ``````
-ints.filter { it > 0 }
-// this literal is of type '(it: Int) -> Boolean'
+var a: String = "abc" // Regular initialization means non-null by default
+a = null // compilation error // Throws NPE (NullPointerException)
 ``````
+
+**To allow nulls**, we can declare a variable as **nullable** string, written `String?`:
+``````
+var b: String? = "abc" // can be set null
+b = null // ok
+print(b)
+``````
+
+#### Safe (Null) Calls
+
+Use the **safe call operator**, written `?.` :
+``````
+val a = "Kotlin"
+val b: String? = null
+println(b?.length)
+println(a?.length)
+``````
+This returns `b.length` if `b` is not null, and null otherwise. The type of this expression is `Int?`.
+
+
+**Safe calls are useful in chains.** For example, if Bob, an Employee, may be assigned to a Department (or not), that in turn may have another Employee as a department head, then to obtain the name of Bob's department head (if any), we write the following:
+``````
+bob?.department?.head?.name
+``````
+Such a chain returns `null` if _any_ of the properties in it is null.
+
+
+A safe call can also be placed on the **left side of an assignment**. Then, if one of the receivers in the safe calls chain is null, the assignment is skipped, and the expression on the right is not evaluated at all:
+``````
+// If either `person` or `person.department` is null, the function is not called:
+person?.department?.head = managersPool.getManager()
+``````
+
+#### Elvis Operator
+
+When we have a nullable reference `b`, we can say "if `b` is not null, use it, otherwise use some non-null value":
+``````
+val l: Int = if (b != null) b.length else -1
+``````
+Along with the complete `if`-expression, this can be expressed with the **Elvis operator**, written `?:` :
+``````
+val l = b?.length ?: -1
+``````
+* **If the expression to the left of `?:` is not null, the elvis operator returns it, otherwise it returns the expression to the right.**
+* Note that the right-hand side expression is evaluated only if the left-hand side is null.
+
+Note that, since `throw` and `return` are expressions in Kotlin, they can also be used on the right hand side of the elvis operator. This can be very handy, for example, for checking function arguments:
+``````
+fun foo(node: Node): String? {
+    val parent = node.getParent() ?: return null
+    val name = node.getName() ?: throw IllegalArgumentException("name expected")
+    // ...
+}
+``````
+
+### The Nothing Type
+
+**The type of the `throw` expression is the special type `Nothing`.** The type has no values and is used to mark code locations that can never be reached. In your own code, you can use `Nothing` to mark a function that never returns:
+``````
+fun fail(message: String): Nothing {
+    throw IllegalArgumentException(message)
+}
+``````
+
+When you call this function, the compiler will know that the execution doesn't continue beyond the call:
+``````
+val s = person.name ?: fail("Name required")
+println(s)     // 's' is known to be initialized at this point
+``````
+
+Another case where you may encounter this type is **type inference**. **The nullable variant of this type, `Nothing?`, has exactly one possible value, which is `null`.** If you use `null` to initialize a value of an inferred type and there's no other information that can be used to determine a more specific type, the compiler will infer the `Nothing?` type:
+``````
+val x = null           // 'x' has type `Nothing?`
+val l = listOf(null)   // 'l' has type `List<Nothing?>
+``````
+
 
 ## Notes on IntelliJ
 
